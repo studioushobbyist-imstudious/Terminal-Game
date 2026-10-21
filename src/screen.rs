@@ -61,7 +61,7 @@ impl Screen {
         for i in 0..texture_size{
             let character = texture.grid[i as usize];
 
-            if character == texture.trans {continue}
+            if character == texture.trans && texture.apply_trans{continue}
 
             self.write_to(
                 character,
@@ -93,7 +93,7 @@ impl Screen {
                 let sy = (((dy as f32 + 0.5) / s) as usize).min(th - 1);
 
                 let character = texture.grid[sy * tw + sx];
-                if character == texture.trans {
+                if character == texture.trans && texture.apply_trans {
                     continue;
                 }
 
@@ -169,7 +169,7 @@ impl Screen {
         }
     }
 
-    
+
     pub fn persist_draw_texture(&mut self, texture: &Texture, x: u32, y: u32){
         let texture_width = texture.width as usize;
         let texture_height = texture.height as usize;
@@ -177,7 +177,7 @@ impl Screen {
         for i in 0..texture_size{
             let character = texture.grid[i as usize];
 
-            if character == texture.trans {continue}
+            if character == texture.trans && texture.apply_trans {continue}
 
             self.persist_write_to(
                 character,
@@ -209,7 +209,7 @@ impl Screen {
                 let sy = (((dy as f32 + 0.5) / s) as usize).min(th - 1);
 
                 let character = texture.grid[sy * tw + sx];
-                if character == texture.trans {
+                if character == texture.trans && texture.apply_trans {
                     continue;
                 }
 

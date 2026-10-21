@@ -14,25 +14,38 @@ use screen::Screen;
 mod ball;
 use ball::Ball;
 
+mod font;
+use font::{font_load};
+
 fn main() -> std::io::Result<()> {
     let (width, height) = terminal::size()?;
 
+    let fps_cap: u64 = 0;
     let mut fps_timer = Instant::now();
     let mut frames = 0u32;
-    let mut fps = 0u32;
+    let mut fps: u32;
 
     let mut screen = Screen::new(width as u32, height as u32);
     let mut ball = Ball::new(0, 0, 2, 1, texture_make_circle(12, 6, '@', ' '));
     let swag_texture = texture_load("assets/SwagTest.at").map_err(std::io::Error::other)?;
 
+    let font = font_load("assets/Terminal-Gothic.af").map_err(std::io::Error::other)?;
+    let mut text_selected = true;
+    let mut text_texture = font.render_text(
+        "aaa",
+        "straight",
+        5,
+        7,
+    ).map_err(std::io::Error::other)?;
 
+    screen.draw_texture(&text_texture, 0, 0);
 
     terminal::enable_raw_mode()?;
     execute!(stdout(), cursor::Hide)?;
     screen.clear_terminal()?;
     let start = Instant::now();
 
-let mut t1 = texture_make_text(&format!("Terminal width:  {width} columns"), '\n');
+    let mut t1 = texture_make_text(&format!("Terminal width:  {width} columns"), '\n');
     let mut t2 = texture_make_text(&format!("Terminal height: {height} rows"), '\n');
     let mut t3 = texture_make_text("FPS: 0", '\n'); // Declare t3 outside the loop
 
@@ -66,22 +79,40 @@ let mut t1 = texture_make_text(&format!("Terminal width:  {width} columns"), '\n
             fps = frames;
             frames = 0;
             fps_timer = Instant::now();
-            t3 = texture_make_text(&format!("FPS: {fps}"), '\n'); 
+            t3 = texture_make_text(&format!("IPS: {fps}"), '\n'); 
+            text_texture = font.render_text(
+                &format!("{fps} ips"),
+                "straight",
+                5,
+                7,
+            ).map_err(std::io::Error::other)?;
+
+            text_texture.apply_trans = if text_selected {true} else {false}
+
         }
 
         // Draw t3 EVERY frame so it doesn't get cleared by clear_grid()
         screen.draw_texture(&t3, 0, 2); 
+        screen.draw_texture(&text_texture, 20, 40);
 
         screen.push_back_cursor()?;
         screen.draw()?;
 
-        let target = Duration::ZERO;
+        let target = if fps_cap == 0 {
+            Duration::ZERO
+        } else {
+            Duration::from_secs_f64(1.0 / fps_cap as f64)
+        };
+
         let remaining = target.saturating_sub(frame_start.elapsed());
         if event::poll(remaining)? { // change 3: use `remaining`, not a fresh 33 ms
             match event::read()? {
                 Event::Key(key) if key.kind == KeyEventKind::Press => {
                     if key.code == KeyCode::Char('q') {
                         break;
+                    }
+                    if key.code == KeyCode::Char('s') {
+                        text_selected = !text_selected;
                     }
                     if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
                         break;

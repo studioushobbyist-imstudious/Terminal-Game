@@ -1,0 +1,443 @@
+# Terminal Test Font
+# 5x5 glyphs; '`' is transparent, '@' is ink.
+transparent '`'
+
+char 'a'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@``
+`@`@`
+`@@@`
+@```@
+
+char 'b'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+@````
+@````
+@@@@`
+@```@
+@@@@`
+
+char 'c'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@@
+`@```
+`@```
+``@@@
+
+char 'd'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+````@
+````@
+`@@@@
+@```@
+`@@@@
+
+char 'e'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@`
+`@`@`
+`@@``
+``@@@
+
+char 'f'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@@
+``@``
+@@@@`
+``@``
+``@``
+
+char 'g'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@@
+`@```
+`@`@@
+``@@@
+
+char 'h'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+@````
+@````
+@@@@`
+@```@
+@```@
+
+char 'i'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@``
+`````
+``@``
+``@``
+``@``
+
+char 'j'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+````@
+`````
+````@
+````@
+`@@@`
+
+char 'k'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+@```@
+@``@`
+@@@``
+@``@`
+@```@
+
+char 'l'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@```
+`@```
+`@```
+`@```
+``@@@
+
+char 'm'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@@`@@
+@@`@@
+@`@`@
+@`@`@
+
+char 'n'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@@@@`
+@```@
+@```@
+@```@
+
+char 'o'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@`
+`@``@
+`@``@
+``@@`
+
+char 'p'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@@@@`
+@```@
+@@@@`
+@````
+
+char 'q'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@`
+`@``@
+``@@`
+````@
+
+char 'r'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@@@@`
+@```@
+@````
+@````
+
+char 's'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+``@@@
+`@```
+``@@`
+@@@``
+
+char 't'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@``
+@@@@@
+``@``
+``@``
+``@@`
+
+char 'u'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@```@
+@```@
+@```@
+``@@`
+
+char 'v'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@```@
+@```@
+`@`@`
+``@``
+
+char 'w'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@`@`@
+@`@`@
+@@`@@
+``@``
+
+char 'x'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@```@
+``@``
+@```@
+`````
+
+char 'y'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@```@
+`@`@`
+``@@`
+``@``
+
+char 'z'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+@@@@@
+```@`
+``@``
+@@@@@
+
+char '0'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@`
+`@``@
+`@``@
+`@``@
+``@@`
+
+char '1'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@``
+`@@``
+``@``
+``@``
+`@@@`
+
+char '2'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@`
+`@``@
+````@
+``@``
+`@@@@
+
+char '3'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@@@`
+````@
+``@@`
+````@
+`@@@`
+
+char '4'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@``@
+`@``@
+`@@@@
+````@
+````@
+
+char '5'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@@@@
+`@```
+`@@@`
+````@
+`@@@`
+
+char '6'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@@
+`@```
+`@@@`
+`@``@
+``@@`
+
+char '7'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@@@@
+````@
+```@`
+``@``
+``@``
+
+char '8'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@`
+`@``@
+``@@`
+`@``@
+``@@`
+
+char '9'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@@`
+`@``@
+``@@@
+````@
+``@@`
+
+char ','
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+`````
+`````
+``@``
+`@```
+
+char '?'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`@@@`
+````@
+```@`
+`````
+```@`
+
+char '!'
+mode straight
+size 5x5
+spacing 6
+glyph 0
+``@``
+``@``
+``@``
+`````
+``@``
+
+char ' '
+mode straight
+size 5x5
+spacing 6
+glyph 0
+`````
+`````
+`````
+`````
+`````

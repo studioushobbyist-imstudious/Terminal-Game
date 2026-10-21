@@ -4,6 +4,7 @@ use std::path::Path;
 /// # Terminal Texture
 /// ascii art for terminal
 pub struct Texture {
+    pub apply_trans: bool,
     pub trans: char, // character treated as transparancy character
     pub width: u32,
     pub height: u32,
@@ -13,6 +14,7 @@ pub struct Texture {
 impl Texture {
     pub fn new(w: u32, h: u32, trans_char: char) -> Self{
         Texture { 
+            apply_trans: true,
             trans: trans_char, 
             width: w, 
             height: h, 
@@ -100,6 +102,7 @@ pub fn texture_make_text(text: &str, trans: char) -> Texture {
     let height = 1;
 
     Texture {
+        apply_trans: true,
         trans,
         width,
         height,
@@ -281,6 +284,7 @@ pub fn texture_parse(input: &str) -> Result<Texture, String> {
     }
 
     Ok(Texture {
+        apply_trans: true,
         trans,
         width,
         height,
