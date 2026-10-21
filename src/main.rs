@@ -31,45 +31,51 @@ fn main() -> std::io::Result<()> {
     execute!(stdout(), cursor::Hide)?;
     screen.clear_terminal()?;
     let start = Instant::now();
+
+let mut t1 = texture_make_text(&format!("Terminal width:  {width} columns"), '\n');
+    let mut t2 = texture_make_text(&format!("Terminal height: {height} rows"), '\n');
+    let mut t3 = texture_make_text("FPS: 0", '\n'); // Declare t3 outside the loop
+
+    screen.persist_draw_texture(&t1, 0, 0);
+    screen.persist_draw_texture(&t2, 0, 1);
     
     loop {
         let t = start.elapsed().as_secs_f32();
 
         let frame_start = Instant::now();
-        let screen_width = screen.width;
-        let screen_height = screen.height;
-        let t1 = texture_make_text(&format!("Terminal width:  {screen_width} columns"), '\n');
-        let t2 = texture_make_text(&format!("Terminal height: {screen_height} rows"), '\n');
-        let t3 = texture_make_text(&format!("FPS: {fps}"), '\n'); // change 1: FPS text
+        let mut screen_width = screen.width;
+        let mut screen_height = screen.height;
 
         screen.clear_grid();
 
         let s = 0.8 + 0.2 * (t * 3.0).sin();
-        screen.draw_texture_scaled(&swag_texture, 
-            screen_width/2-(swag_texture.width as f32 * s) as u32/2, 
-            screen_height/2-(swag_texture.height as f32 * s) as u32/2, s
-        );
+        let draw_width = (swag_texture.width as f32 * s) as u32;
+        let draw_height = (swag_texture.height as f32 * s) as u32;
 
+        let x = screen_width.saturating_sub(draw_width) / 2;
+        let y = screen_height.saturating_sub(draw_height) / 2;
+
+        screen.draw_texture_scaled(&swag_texture, x, y, s);
 
         ball.update(screen_width, screen_height);
         ball.draw(&mut screen);
 
-        screen.draw_texture(&t1, 0, 0);
-        screen.draw_texture(&t2, 0, 1);
-        screen.draw_texture(&t3, 0, 2); 
-
-        screen.push_back_cursor()?;
-        screen.draw()?;
-
-        // change 2: count frames, publish the number once per second
+        // Count frames, update the fps value and regenerate t3 once per second
         frames += 1;
         if fps_timer.elapsed() >= Duration::from_secs(1) {
             fps = frames;
             frames = 0;
             fps_timer = Instant::now();
+            t3 = texture_make_text(&format!("FPS: {fps}"), '\n'); 
         }
 
-        let target = Duration::from_millis(33);
+        // Draw t3 EVERY frame so it doesn't get cleared by clear_grid()
+        screen.draw_texture(&t3, 0, 2); 
+
+        screen.push_back_cursor()?;
+        screen.draw()?;
+
+        let target = Duration::ZERO;
         let remaining = target.saturating_sub(frame_start.elapsed());
         if event::poll(remaining)? { // change 3: use `remaining`, not a fresh 33 ms
             match event::read()? {
@@ -83,7 +89,13 @@ fn main() -> std::io::Result<()> {
                 }
                 Event::Resize(w, h) => {
                     screen.resize(w as u32, h as u32);
+                    screen_width = screen.width;
+                    screen_height = screen.height;
                     screen.clear_terminal()?;
+                    t1 = texture_make_text(&format!("Terminal width:  {screen_width} columns"), '\n');
+                    t2 = texture_make_text(&format!("Terminal height: {screen_height} rows"), '\n');
+                    screen.persist_draw_texture(&t1, 0, 0);
+                    screen.persist_draw_texture(&t2, 0, 1);
                 }
                 _ => {}
             }

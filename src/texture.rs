@@ -11,7 +11,7 @@ pub struct Texture {
 }
 
 impl Texture {
-    fn new(w: u32, h: u32, trans_char: char) -> Self{
+    pub fn new(w: u32, h: u32, trans_char: char) -> Self{
         Texture { 
             trans: trans_char, 
             width: w, 
@@ -19,6 +19,80 @@ impl Texture {
             grid: vec![' '; (w as usize) * (h as usize)]
         }
     }
+    pub fn write_to(&mut self, character: char, x: u32, y: u32){
+        if x < self.width && y < self.height{
+            let index = x as usize + self.width as usize * y as usize;
+            self.grid[index] = character;
+        }
+    }
+    pub fn draw_line(&mut self,character: char,x1: u32,y1: u32,x2: u32,y2: u32,) {
+        let mut x1 = x1 as i32;
+        let mut y1 = y1 as i32;
+
+        let x2 = x2 as i32;
+        let y2 = y2 as i32;
+
+        let dx = (x2 - x1).abs();
+        let dy = (y2 - y1).abs();
+
+        let sx = if x1 < x2 { 1 } else { -1 };
+        let sy = if y1 < y2 { 1 } else { -1 };
+
+        let mut error = dx - dy;
+
+        loop {
+            // Draw the character if the point is inside the screen.
+            if x1 >= 0 && y1 >= 0 && (x1 as u32) < self.width && (y1 as u32) < self.height{
+                self.write_to(character, x1 as u32, y1 as u32);
+            }
+
+            // Stop after drawing the endpoint.
+            if x1 == x2 && y1 == y2 {
+                break;
+            }
+
+            let error2 = 2 * error;
+
+            if error2 > -dy {
+                error -= dy;
+                x1 += sx;
+            }
+
+            if error2 < dx {
+                error += dx;
+                y1 += sy;
+            }
+        }
+    }
+    pub fn fill(&mut self, character: char) {
+        self.grid.fill(character);
+    }
+    pub fn draw_outline_rectangle(&mut self,character: char,x: u32,y: u32,w: u32,h: u32) {
+        if w == 0 || h == 0 {
+            return;
+        }
+
+        let right = x.saturating_add(w - 1);
+        let bottom = y.saturating_add(h - 1);
+
+        self.draw_line(character, x, y, right, y);
+        self.draw_line(character, x, bottom, right, bottom);
+        self.draw_line(character, x, y, x, bottom);
+        self.draw_line(character, right, y, right, bottom);
+    }
+    pub fn draw_fill_rectangle(&mut self, character: char, x: u32, y: u32, w: u32, h: u32) {
+        let x_end = x.saturating_add(w).min(self.width);
+        let y_end = y.saturating_add(h).min(self.height);
+        if x >= x_end || y >= y_end {
+            return; // required here: an inverted range would panic when slicing
+        }
+
+        let tw = self.width as usize;
+        for py in y as usize..y_end as usize {
+            self.grid[py * tw + x as usize..py * tw + x_end as usize].fill(character);
+        }
+    }
+
 }
 
 pub fn texture_make_text(text: &str, trans: char) -> Texture {
