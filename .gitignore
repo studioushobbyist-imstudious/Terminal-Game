@@ -1,5 +1,5 @@
 /target
-
+/scripts
 main
 run.sh
 cargorun.sh
