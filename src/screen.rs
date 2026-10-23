@@ -79,6 +79,7 @@ impl Screen {
         y: u32,
         animation: &A,
     ) {
+        
         let tw = texture.width as usize;
 
         for i in 0..texture.grid.len() {

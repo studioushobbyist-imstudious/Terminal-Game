@@ -33,7 +33,7 @@ impl Settings{
     fn new() -> Self{
         Settings { 
             debug: true,
-            fps: 60
+            fps: 0
         }
     }
 }
@@ -42,41 +42,42 @@ impl Settings{
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (width, height) = terminal::size()?;
 
-    let fps_cap: u64 = 60;
+    terminal::enable_raw_mode()?;
+    execute!(stdout(), cursor::Hide)?;
+
+    let mut screen = Screen::new(width as u32, height as u32);
+    screen.clear_terminal()?;
+    let settings = Settings::new();
+
+    // region: Fps
+    let fps_cap: u64 = settings.fps;
     let mut fps_timer = Instant::now();
     let mut frames = 0u32;
     let mut fps: u32;
-
-    let mut screen = Screen::new(width as u32, height as u32);
-    let settings = Settings::new();
- 
-    let font = font_load("assets/fonts/Terminal-Bound.af").map_err(std::io::Error::other)?;
-
-    let audio = AudioManager::new()?;
-
-    terminal::enable_raw_mode()?;
-    execute!(stdout(), cursor::Hide)?;
-    screen.clear_terminal()?;
-    let start = Instant::now();
-
     let mut t1 = texture_make_text(&format!("Terminal width:  {width} columns"), '\n');
     let mut t2 = texture_make_text(&format!("Terminal height: {height} rows"), '\n');
     let mut t3 = texture_make_text("FPS: 0", '\n'); 
+    // endregion: Fps
+    
+    let font = font_load("assets/fonts/Terminal-Bound.af").map_err(std::io::Error::other)?;
+    let audio = AudioManager::new()?;
+
+
 
     let logo = texture_load("assets/textures/ascii/Logo.at")?;
 
     let mut anim_seq = animation::TextureAnimationSequence::new(
         animation::Bayer4, 
         vec![
-            animation::Phase::forward(60, animation::Easing::EaseInOut),   
-            animation::Phase::hold(15, 1.0),                    
-            animation::Phase::backward(60, animation::Easing::EaseInOut),  
+            animation::Phase::forward(fps_cap as u32, animation::Easing::EaseInOut),   
+            animation::Phase::hold(fps_cap as u32 / 4, 1.0),                    
+            animation::Phase::backward(fps_cap as u32, animation::Easing::EaseInOut),  
         ]
     );
 
     screen.persist_draw_texture(&t1, 0, 0);
     screen.persist_draw_texture(&t2, 0, 1);
-    audio.play("assets/audio/test/WSIHL.wav")?;
+    // audio.play("assets/audio/test/WSIHL.wav")?;
 
     let mut t : u128 = 0;
     loop {
@@ -106,7 +107,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
         anim_seq.tick();
         
-        
+        screen.draw_texture(
+            &font.render_text(
+                "hello", 
+                "straight", 
+                2, 
+                2
+            )?, 
+            0, 
+            screen_height.saturating_sub(2)
+        );
 
         screen.push_back_cursor()?;
         screen.draw()?;
