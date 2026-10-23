@@ -1,5 +1,6 @@
 
 use crate::texture::Texture;
+use crate::animation::{Ctx, TextureAnimation};
 
 use crossterm::{cursor, execute, terminal};
 use std::io::stdout;
@@ -62,7 +63,7 @@ impl Screen {
             let character = texture.grid[i as usize];
 
             if character == texture.trans && texture.apply_trans{continue}
-
+            
             self.write_to(
                 character,
                 (x as usize + i % texture.width as usize) as u32, 
@@ -70,6 +71,44 @@ impl Screen {
             );
         }
     }
+
+    pub fn draw_texture_animated<A: TextureAnimation + ?Sized>(
+        &mut self,
+        texture: &Texture,
+        x: u32,
+        y: u32,
+        animation: &A,
+    ) {
+        let tw = texture.width as usize;
+
+        for i in 0..texture.grid.len() {
+            let character = texture.grid[i];
+
+            if texture.apply_trans && character == texture.trans {
+                continue;
+            }
+
+            let ctx = Ctx {
+                x: (i % tw) as u32,
+                y: (i / tw) as u32,
+                width: texture.width,
+                height: texture.height,
+            };
+
+            if let Some((character, tx, ty)) = animation.transform(character, &ctx) {
+                // i64 so neither the addition nor a negative offset can wrap
+                let sx = x as i64 + tx as i64;
+                let sy = y as i64 + ty as i64;
+
+                if sx < 0 || sy < 0 || sx >= self.width as i64 || sy >= self.height as i64 {
+                    continue;
+                }
+
+                self.write_to(character, sx as u32, sy as u32);
+            }
+        }
+    }
+
     pub fn draw_texture_scaled(&mut self, texture: &Texture, x: u32, y: u32, s: f32) {
         if !(s > 0.0) || texture.width == 0 || texture.height == 0 {
             return;
