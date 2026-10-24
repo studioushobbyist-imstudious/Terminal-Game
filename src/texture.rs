@@ -94,7 +94,31 @@ impl Texture {
             self.grid[py * tw + x as usize..py * tw + x_end as usize].fill(character);
         }
     }
+    pub fn crop(&mut self, top: u32, bottom: u32, left: u32, right: u32) {
+        // two saturating_subs, so huge values can't overflow
+        // and over-cropping gives an empty texture instead of a panic
+        let new_w = self.width.saturating_sub(left).saturating_sub(right);
+        let new_h = self.height.saturating_sub(top).saturating_sub(bottom);
 
+        if new_w == 0 || new_h == 0 {
+            self.width = 0;
+            self.height = 0;
+            self.grid.clear();
+            return;
+        }
+
+        let old_w = self.width as usize;
+        let mut grid = Vec::with_capacity(new_w as usize * new_h as usize);
+
+        for y in 0..new_h as usize {
+            let start = (y + top as usize) * old_w + left as usize;
+            grid.extend_from_slice(&self.grid[start..start + new_w as usize]);
+        }
+
+        self.grid = grid;
+        self.width = new_w;
+        self.height = new_h;
+    }
 }
 
 pub fn texture_make_text(text: &str, trans: char) -> Texture {

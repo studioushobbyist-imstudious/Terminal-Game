@@ -187,7 +187,7 @@ impl<F: Field> Tick for TextureAnimationSequence<F> {
             }
         }
     }
-
+    
     fn finished(&self) -> bool {
         !self.looping && self.phase >= self.phases.len()
     }
